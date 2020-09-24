@@ -10,7 +10,6 @@
                                           ByteArrayDeserializer)
    (org.apache.kafka.common.errors SerializationException)))
 
-
 (set! *warn-on-reflection* false)
 
 ;; Access to various serdes
@@ -21,9 +20,9 @@
                       :long (Serdes/Long)
                       :string (Serdes/String)}]
     (merge
-      topic-config
-      {:key-serde (serde-lookup (:key-serde topic-config))
-       :value-serde (serde-lookup (:value-serde topic-config))})))
+     topic-config
+     {:key-serde (serde-lookup (:key-serde topic-config))
+      :value-serde (serde-lookup (:value-serde topic-config))})))
 
 ;; Serialization/Deserialization
 ;;
@@ -33,8 +32,8 @@
 
 (def byte-array-serde
   "Byte-array key and value serde."
-   {:key-serde (Serdes/ByteArray)
-    :value-serde (Serdes/ByteArray)})
+  {:key-serde (Serdes/ByteArray)
+   :value-serde (Serdes/ByteArray)})
 
 (def byte-array-serializer (ByteArraySerializer.))
 (def byte-array-deserializer (ByteArrayDeserializer.))

@@ -19,6 +19,7 @@
 
 ;; The basic serde
 
+
 (s/def ::serde-keyword qualified-keyword?)
 (s/def ::schema string?)
 (s/def ::schema-filename string?)
@@ -33,6 +34,7 @@
 
 
 ;; Avro serde
+
 
 (defn exactly-one-true?
   [& args]
@@ -51,6 +53,7 @@
 
 
 ;; Topics as used by creation clients
+
 
 (s/def ::partition-count pos-int?)
 (s/def ::replication-factor pos-int?)
@@ -75,6 +78,7 @@
 
 
 ;; Topics where only serdes are needed
+
 
 (s/def :jackdaw.serde-only-client/topic
   (s/keys :req-un [::key-serde ::value-serde]))

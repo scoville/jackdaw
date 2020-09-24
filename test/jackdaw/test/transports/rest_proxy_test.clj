@@ -81,7 +81,6 @@
         (log/info "end" app-id)
         result))))
 
-
 (deftest test-rest-proxy-transport
   (with-rest-proxy-transport {:app-id "echo-for-exit-hooks"
                               :transport (fn []
@@ -109,11 +108,11 @@
 
         (log/info "feed: " msg)
         (s/put! messages
-                    {:topic topic
-                     :key msg-key
-                     :value msg
-                     :timestamp (System/currentTimeMillis)
-                     :ack ack})
+                {:topic topic
+                 :key msg-key
+                 :value msg
+                 :timestamp (System/currentTimeMillis)
+                 :ack ack})
 
         (let [result @ack]
           (is (= "test-in" (:topic result)))
@@ -135,11 +134,11 @@
 
         (log/info "feed: " msg)
         (s/put! messages
-                    {:topic topic
-                     :key msg-key
-                     :value msg
-                     :timestamp (System/currentTimeMillis)
-                     :ack ack})
+                {:topic topic
+                 :key msg-key
+                 :value msg
+                 :timestamp (System/currentTimeMillis)
+                 :ack ack})
 
         (testing "the write is acknowledged"
           (let [result (deref ack 1000 {:error :timeout})]

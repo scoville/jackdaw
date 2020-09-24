@@ -63,6 +63,7 @@
 
 ;;; Record metadata
 
+
 (defn ->RecordMetadata
   "Given unrolled ctor-style arguments, create a Kafka `RecordMetadata`.
 

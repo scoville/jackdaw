@@ -1,16 +1,15 @@
 (ns jackdaw.serdes.resolver-test
   (:require
-    [clj-uuid :as uuid]
-    [clojure.test :refer [deftest is testing] :as test]
-    [jackdaw.serdes.avro :as avro]
-    [jackdaw.serdes]
-    [jackdaw.serdes.json]
-    [jackdaw.serdes.edn]
-    [jackdaw.serdes.resolver :as resolver]
-    [jackdaw.serdes.avro.schema-registry :as reg])
+   [clj-uuid :as uuid]
+   [clojure.test :refer [deftest is testing] :as test]
+   [jackdaw.serdes.avro :as avro]
+   [jackdaw.serdes]
+   [jackdaw.serdes.json]
+   [jackdaw.serdes.edn]
+   [jackdaw.serdes.resolver :as resolver]
+   [jackdaw.serdes.avro.schema-registry :as reg])
   (:import (clojure.lang ExceptionInfo)
            (org.apache.kafka.common.serialization Serde)))
-
 
 (set! *warn-on-reflection* false)
 
@@ -30,22 +29,22 @@
 (deftest find-serde-var-test
   (testing "Can resolve various serdes names"
     (is (not (nil?
-               (resolver/find-serde-var
-                 {:serde-keyword :jackdaw.serdes.avro/serde}))))
+              (resolver/find-serde-var
+               {:serde-keyword :jackdaw.serdes.avro/serde}))))
     (is (not (nil?
-               (resolver/find-serde-var
-                 {:serde-keyword :jackdaw.serdes/string-serde}))))
+              (resolver/find-serde-var
+               {:serde-keyword :jackdaw.serdes/string-serde}))))
     (is (not (nil?
-               (resolver/find-serde-var
-                 {:serde-keyword :jackdaw.serdes.json/serde}))))
+              (resolver/find-serde-var
+               {:serde-keyword :jackdaw.serdes.json/serde}))))
     (is (not (nil?
-               (resolver/find-serde-var
-                 {:serde-keyword :jackdaw.serdes.edn/serde})))))
+              (resolver/find-serde-var
+               {:serde-keyword :jackdaw.serdes.edn/serde})))))
   (testing "error is thrown if the name is not known"
     (is (thrown-with-msg? ExceptionInfo
                           #"Could not resolve :serde-keyword value to a serde function"
                           (resolver/find-serde-var
-                            {:serde-keyword :bibbity.bobbity/boo})))))
+                           {:serde-keyword :bibbity.bobbity/boo})))))
 
 (deftest serdes-resolver-test
   (testing "resolving serdes based on config"
@@ -83,8 +82,8 @@
       (let [resolver-fn (resolver/serde-resolver :schema-registry-url ""
                                                  :schema-registry-client (reg/mock-client)
                                                  :type-registry (merge
-                                                                  avro/+base-schema-type-registry+
-                                                                  avro/+UUID-type-registry+))
+                                                                 avro/+base-schema-type-registry+
+                                                                 avro/+UUID-type-registry+))
             avro-config {:serde-keyword :jackdaw.serdes.avro.confluent/serde
                          :schema-filename "resources/example_schema.avsc"
                          :key? false}

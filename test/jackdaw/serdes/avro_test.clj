@@ -228,7 +228,6 @@
                                                :type array-schema-json}]})
           schema-type (schema-type avro-schema)
 
-
           clj-data {:stringField "foo"
                     :longField 123
                     :recordField [{:a 1}]}
@@ -627,8 +626,6 @@
       (is (= nil (:optional_field json)))
       (is (= 3 (:long_field json))))))
 
-
-
 (deftest schemaless-test
   (let [serde (->serde nil)]
     (is (= (round-trip serde "bananas" "hello")
@@ -657,7 +654,6 @@
 
     (is (thrown? java.lang.IllegalArgumentException
                  (round-trip serde "bananas" {:hello 3})))))
-
 
 (deftest decoupled-reader-simple-string-schema
   (let [reg-client (reg/mock-client)

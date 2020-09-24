@@ -50,9 +50,9 @@
       (is (= clj-data (avro/avro->clj schema-type avro-data)))
       (is (= avro-data (avro/clj->avro schema-type clj-data [])))
       (is (thrown-with-msg?
-            clojure.lang.ExceptionInfo
-            #"java.lang.String is not a valid type for uuid"
-            (avro/clj->avro schema-type (update clj-data :id str) []))))))
+           clojure.lang.ExceptionInfo
+           #"java.lang.String is not a valid type for uuid"
+           (avro/clj->avro schema-type (update clj-data :id str) []))))))
 
 (deftest schema-type-uuid
   (testing "string base type"
@@ -84,6 +84,6 @@
       (is (= clj-data (avro/avro->clj schema-type avro-data)))
       (is (= avro-data (avro/clj->avro schema-type clj-data [])))
       (is (thrown-with-msg?
-            clojure.lang.ExceptionInfo
-            #"java.lang.String is not a valid type for uuid"
-            (avro/clj->avro schema-type (update clj-data :id str) []))))))
+           clojure.lang.ExceptionInfo
+           #"java.lang.String is not a valid type for uuid"
+           (avro/clj->avro schema-type (update clj-data :id str) []))))))

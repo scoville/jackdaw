@@ -23,7 +23,6 @@
       (when test-id
         (log/info "end" test-id)))))
 
-
 (deftest test-with-status
   (with-identity-transport {:test-id "test-with-status"
                             :transport #(identity-transport)}
@@ -62,7 +61,6 @@
         (testing "with-timing records finished-at"
           (is (contains? (timing-for 0) :finished-at)))))))
 
-
 (deftest test-journal-snapshots
   (with-identity-transport {:test-id "test-journal-snapshots"
                             :transport #(identity-transport)}
@@ -77,7 +75,7 @@
           (is (= {:topics {}}
                  (:journal-before (snapshots-for {:topic :foo :value {:payload :abc}}))))
 
-         (testing "with-journal-snapshots records journal-after"
-           (is (= {:topics {:foo {:topic :foo
-                                  :value {:payload :abc}}}}
-                  (:journal-after (snapshots-for {:topic :foo :value {:payload :abc}}))))))))))
+          (testing "with-journal-snapshots records journal-after"
+            (is (= {:topics {:foo {:topic :foo
+                                   :value {:payload :abc}}}}
+                   (:journal-after (snapshots-for {:topic :foo :value {:payload :abc}}))))))))))

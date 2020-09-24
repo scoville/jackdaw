@@ -4,7 +4,6 @@
           PartitionInfo
           Node TopicPartition TopicPartitionInfo])
 
-
 (set! *warn-on-reflection* true)
 
 ;;; Node
