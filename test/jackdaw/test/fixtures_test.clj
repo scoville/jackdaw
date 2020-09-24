@@ -63,14 +63,14 @@
                   :reset-fn (fn [reset-args rt args]
                               (reset! reset-args [rt args])
                               0)}
-    (fn [{:keys [resetter reset-args error-data]}]
-      (is (instance? kafka.tools.StreamsResetter resetter))
-      (is (= ["--application-id" "yolo"
-              "--bootstrap-servers" "kafka.test:9092"
-              "--foo" "foo"
-              "--bar" "bar"]
-             reset-args))
-      (is (empty? error-data)))))
+                 (fn [{:keys [resetter reset-args error-data]}]
+                   (is (instance? kafka.tools.StreamsResetter resetter))
+                   (is (= ["--application-id" "yolo"
+                           "--bootstrap-servers" "kafka.test:9092"
+                           "--foo" "foo"
+                           "--bar" "bar"]
+                          reset-args))
+                   (is (empty? error-data)))))
 
 (deftest test-reset-application-fixture-failure
   (test-resetter {:app-config {"application.id" "yolo"
@@ -82,8 +82,8 @@
                               (.write *err* "helpful error message\n")
                               (.write *out* "essential application info\n")
                               1)}
-    (fn [{:keys [resetter reset-args error-data]}]
-      (is (instance? kafka.tools.StreamsResetter resetter))
-      (is (= 1 (:status error-data)))
-      (is (= "helpful error message\n" (:err error-data)))
-      (is (= "essential application info\n" (:out error-data))))))
+                 (fn [{:keys [resetter reset-args error-data]}]
+                   (is (instance? kafka.tools.StreamsResetter resetter))
+                   (is (= 1 (:status error-data)))
+                   (is (= "helpful error message\n" (:err error-data)))
+                   (is (= "essential application info\n" (:out error-data))))))

@@ -1,10 +1,10 @@
 (ns jackdaw.test.journal
   ""
   (:require
-    [clojure.set :refer [subset?]]
-    [clojure.tools.logging :as log]
-    [manifold.stream :as s]
-    [manifold.deferred :as d]))
+   [clojure.set :refer [subset?]]
+   [clojure.tools.logging :as log]
+   [manifold.stream :as s]
+   [manifold.deferred :as d]))
 
 (set! *warn-on-reflection* true)
 

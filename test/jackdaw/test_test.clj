@@ -65,8 +65,8 @@
                                (apply ({:min (fn [v] {:result {:result (apply min v)}})
                                         :max (fn [v] {:result {:result (apply max v)}})
                                         :is-1 (fn [v] (if (= v 1)
-                                                       {:result (:result true)}
-                                                       {:result {:error :not-1}}))}
+                                                        {:result (:result true)}
+                                                        {:result {:error :not-1}}))}
                                        cmd)
                                       params)))
                            with-status)
@@ -91,14 +91,13 @@
 
       (testing "execution stops on an unknown command"
         (is (thrown? NullPointerException
-             (let [{:keys [results journal]}
-                   (jd.test/run-test m [[:min [1 2 3]]
-                                        [:foo 2]
-                                        [:max [1 2 3]]])]
-               (is (= 2 (count results)))
-               (is (= :ok (:status (first results))))
-               (is (= :error (:status (second results)))))))))))
-
+                     (let [{:keys [results journal]}
+                           (jd.test/run-test m [[:min [1 2 3]]
+                                                [:foo 2]
+                                                [:max [1 2 3]]])]
+                       (is (= 2 (count results)))
+                       (is (= :ok (:status (first results))))
+                       (is (= :error (:status (second results)))))))))))
 
 (deftest test-empty-test
   (with-open [t (jd.test/test-machine (kafka-transport))]
@@ -318,7 +317,6 @@
       (catch Exception e
         (reset! error-raised e)))
     (is @error-raised)))
-
 
 (deftest test-transports-loaded
   (let [transports (trns/supported-transports)]

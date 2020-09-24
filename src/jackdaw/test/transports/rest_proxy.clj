@@ -78,17 +78,17 @@
     ;; nil in this case.
 
     (d/chain (method url req)
-      #(update % :body bs/to-string)
-      #(do (log/debug "< " method url (select-keys % [:status :body]))
-           %)
-      #(assoc % :json-body (when (content-available? %)
-                             (json/read-str (:body %)
-                                            :key-fn (comp keyword
-                                                          (fn [x]
-                                                            (clojure.string/replace x "_" "-"))))))
-      #(if-not (ok? (:status %))
-         (assoc % :error :proxy-error)
-         %))))
+             #(update % :body bs/to-string)
+             #(do (log/debug "< " method url (select-keys % [:status :body]))
+                  %)
+             #(assoc % :json-body (when (content-available? %)
+                                    (json/read-str (:body %)
+                                                   :key-fn (comp keyword
+                                                                 (fn [x]
+                                                                   (clojure.string/replace x "_" "-"))))))
+             #(if-not (ok? (:status %))
+                (assoc % :error :proxy-error)
+                %))))
 
 (defn destroy-consumer
   [{:keys [base-uri]}]
@@ -96,9 +96,9 @@
         headers {"Accept" (content-types :json)}
         body nil]
     (d/chain (handle-proxy-request (:delete *http-client*) url headers body)
-      (fn [response]
-        (when (:error response)
-          (throw (ex-info "Failed to destroy consumer after use" {})))))))
+             (fn [response]
+               (when (:error response)
+                 (throw (ex-info "Failed to destroy consumer after use" {})))))))
 
 (defn topic-post
   [{:keys [bootstrap-uri]} msg callback]
@@ -110,13 +110,13 @@
         body {:records [(select-keys msg [:key :value :partition])]}]
 
     (d/chain (handle-proxy-request (:post *http-client*) url headers body)
-      (fn [response]
-        (let [record (when-not (:error response)
-                       (-> (get-in response [:json-body :offsets])
-                           first
-                           (assoc :topic (:topic msg))))]
-          (callback record (when (:error response)
-                             response)))))))
+             (fn [response]
+               (let [record (when-not (:error response)
+                              (-> (get-in response [:json-body :offsets])
+                                  first
+                                  (assoc :topic (:topic msg))))]
+                 (callback record (when (:error response)
+                                    response)))))))
 
 (defrecord RestProxyClient [bootstrap-uri
                             base-uri
@@ -154,13 +154,13 @@
                            (update consumer :base-uri clojure.string/replace #"^http:" "https:")
                            consumer))]
     (d/chain (handle-proxy-request (:post *http-client*) url headers body)
-      (fn [response]
-        (if (:error response)
-          (do (log/infof "rest-proxy create consumer error: %s" (:error response))
-              (assoc client :error response))
-          (let [{:keys [base-uri instance-id]} (:json-body response)]
-            (preserve-https
-             (assoc client :base-uri base-uri, :instance-id instance-id))))))))
+             (fn [response]
+               (if (:error response)
+                 (do (log/infof "rest-proxy create consumer error: %s" (:error response))
+                     (assoc client :error response))
+                 (let [{:keys [base-uri instance-id]} (:json-body response)]
+                   (preserve-https
+                    (assoc client :base-uri base-uri, :instance-id instance-id))))))))
 
 (defn with-subscription
   [{:keys [base-uri group-id instance-id] :as client} topic-metadata]
@@ -171,11 +171,11 @@
         body {:topics topics}]
 
     (d/chain (handle-proxy-request (:post *http-client*) url headers {:topics topics})
-      (fn [response]
-        (if (:error response)
-          (do (log/infof "rest-proxy subscription error: %s" (:error response))
-              (assoc client :error response))
-          (assoc client :subscription topics))))))
+             (fn [response]
+               (if (:error response)
+                 (do (log/infof "rest-proxy subscription error: %s" (:error response))
+                     (assoc client :error response))
+                 (assoc client :subscription topics))))))
 
 (defn rest-proxy-poll
   "Returns a function that takes a consumer and puts any messages retrieved
@@ -186,17 +186,17 @@
         headers {"Accept" (content-types :byte-array)}
         body nil]
     (d/chain (handle-proxy-request (:get *http-client*) url headers body)
-      (fn [response]
-        (when (:error response)
-          (log/errorf "rest-proxy fetch error: %s" (:error response)))
-        (when-not (:error response)
-          (:json-body response))))))
+             (fn [response]
+               (when (:error response)
+                 (log/errorf "rest-proxy fetch error: %s" (:error response)))
+               (when-not (:error response)
+                 (:json-body response))))))
 
 (defn rest-proxy-subscription
   [config topic-metadata]
   (d/chain (rest-proxy-client config)
-    #(with-consumer %)
-    #(with-subscription % topic-metadata)))
+           #(with-consumer %)
+           #(with-subscription % topic-metadata)))
 
 (defn rest-proxy-consumer
   "Creates an asynchronous Kafka Consumer of all topics defined in the
@@ -230,17 +230,17 @@
                              (do
                                (log/info "drained consumer. stopping client")
                                ::drained))
-                    (fn [msgs]
-                      (if (identical? msgs ::drained)
-                        (d/chain client (fn [client]
-                                          (s/close! messages)
-                                          (destroy-consumer client)
-                                          (log/infof "stopped rest-proxy consumer: %s" (proxy-client-info client))))
-                        (d/chain client (fn [client]
-                                          (s/put-all! messages msgs)
-                                          (log/infof "collected %s messages from kafka" (count msgs))
-                                          (Thread/sleep 500)
-                                          (d/recur))))))))
+                           (fn [msgs]
+                             (if (identical? msgs ::drained)
+                               (d/chain client (fn [client]
+                                                 (s/close! messages)
+                                                 (destroy-consumer client)
+                                                 (log/infof "stopped rest-proxy consumer: %s" (proxy-client-info client))))
+                               (d/chain client (fn [client]
+                                                 (s/put-all! messages msgs)
+                                                 (log/infof "collected %s messages from kafka" (count msgs))
+                                                 (Thread/sleep 500)
+                                                 (d/recur))))))))
      :started? started?
      :messages messages
      :continue? continue?}))
@@ -284,17 +284,17 @@
          _ (log/infof "started rest-proxy producer: %s" producer)
          process (d/loop []
                    (d/chain (s/take! messages ::drained)
-                     (fn [{:keys [data-record ack serialization-error] :as message}]
-                       (cond
-                         serialization-error   (do (deliver ack {:error :serialization-error
-                                                                 :message (.getMessage serialization-error)})
-                                                   (d/recur))
+                            (fn [{:keys [data-record ack serialization-error] :as message}]
+                              (cond
+                                serialization-error   (do (deliver ack {:error :serialization-error
+                                                                        :message (.getMessage serialization-error)})
+                                                          (d/recur))
 
-                         data-record       (do (log/debug "sending data: " data-record)
-                                               @(topic-post producer data-record (deliver-ack ack))
-                                               (d/recur))
+                                data-record       (do (log/debug "sending data: " data-record)
+                                                      @(topic-post producer data-record (deliver-ack ack))
+                                                      (d/recur))
 
-                         :else (log/infof "stopped rest-proxy producer: %s" producer)))))]
+                                :else (log/infof "stopped rest-proxy producer: %s" producer)))))]
 
      {:producer  producer
       :messages  messages
