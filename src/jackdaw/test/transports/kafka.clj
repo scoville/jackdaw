@@ -171,7 +171,6 @@
                                    :serialized-key-size
                                    :serialized-value-size]))))))
 
-
 (defn producer
   "Creates an asynchronous kafka producer to be used by a test-machine for for
    injecting test messages"
@@ -191,19 +190,19 @@
                       (select-keys kafka-config ["bootstrap.servers" "group.id"]))
          process (d/loop [message (s/take! messages)]
                    (d/chain (d/future message)
-                     (fn [{:keys [producer-record ack serialization-error] :as m}]
-                       (cond
-                         serialization-error   (do (deliver ack {:error :serialization-error
-                                                                 :message (.getMessage ^Exception serialization-error)})
-                                                   (d/recur (s/take! messages)))
+                            (fn [{:keys [producer-record ack serialization-error] :as m}]
+                              (cond
+                                serialization-error   (do (deliver ack {:error :serialization-error
+                                                                        :message (.getMessage ^Exception serialization-error)})
+                                                          (d/recur (s/take! messages)))
 
-                         producer-record       (do (kafka/send! producer producer-record (deliver-ack ack))
-                                                   (d/recur (s/take! messages)))
+                                producer-record       (do (kafka/send! producer producer-record (deliver-ack ack))
+                                                          (d/recur (s/take! messages)))
 
-                         :else (do
-                                 (.close ^Producer producer)
-                                 (log/infof "stopped kafka producer: "
-                                            (select-keys kafka-config ["bootstrap.servers" "group.id"])))))))]
+                                :else (do
+                                        (.close ^Producer producer)
+                                        (log/infof "stopped kafka producer: "
+                                                   (select-keys kafka-config ["bootstrap.servers" "group.id"])))))))]
 
      {:producer  producer
       :messages  messages

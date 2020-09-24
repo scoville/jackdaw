@@ -39,28 +39,28 @@
                              ^String storeName
                              ^long startingOffset
                              ^long endingOffset]
-       (swap! restore-tracker assoc storeName (inst/now))
-       (log/warnf "Restoring state store (%s.%d) over offsets %s...%s"
-                  (.topic topicPartition) (.partition topicPartition)
-                  startingOffset endingOffset))
+        (swap! restore-tracker assoc storeName (inst/now))
+        (log/warnf "Restoring state store (%s.%d) over offsets %s...%s"
+                   (.topic topicPartition) (.partition topicPartition)
+                   startingOffset endingOffset))
 
       (^void onBatchRestored [_
                               ^TopicPartition topicPartition
                               ^String storeName
                               ^long batchEndOffset
                               ^long numRestored]
-       (log/warnf "Restored a batch from (%s.%d)"
-                  (.topic topicPartition) (.partition topicPartition)))
+        (log/warnf "Restored a batch from (%s.%d)"
+                   (.topic topicPartition) (.partition topicPartition)))
       (^void onRestoreEnd [_
                            ^TopicPartition topicPartition
                            ^String storeName
                            ^long totalRestored]
-       (let [start-date (get @restore-tracker storeName)
-             elapsed-sec (inst/in-seconds (inst/interval start-date
-                                                         (inst/now)))]
-         (log/warnf "Finished restoring state store (%s.%d) elapsed %s"
-                    (.topic topicPartition) (.partition topicPartition)
-                    elapsed-sec))))))
+        (let [start-date (get @restore-tracker storeName)
+              elapsed-sec (inst/in-seconds (inst/interval start-date
+                                                          (inst/now)))]
+          (log/warnf "Finished restoring state store (%s.%d) elapsed %s"
+                     (.topic topicPartition) (.partition topicPartition)
+                     elapsed-sec))))))
 
 (defmacro to!
   "Wraps `#'jackdaw.streams/to!`, providing validation of records

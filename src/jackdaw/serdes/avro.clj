@@ -101,7 +101,7 @@
   [^Schema schema]
   (when schema
     (let [base-type (-> schema (.getType) (.getName))
-          logical-type (-> schema (.getObjectProps) (.get "logicalType") )]
+          logical-type (-> schema (.getObjectProps) (.get "logicalType"))]
       (if logical-type
         {:type base-type :logical-type (str logical-type)}
         {:type base-type}))))
@@ -341,17 +341,16 @@
 (defn ->EnumType [_schema->coercion ^Schema schema]
   (EnumType. schema))
 
-#_
-(defrecord FixedType []
-  SchemaCoercion
-  (match-clj? [_ x]
-    false)
-  (match-avro? [_ x]
-    false)
-  (avro->clj [_ fixed]
-    (throw (UnsupportedOperationException. "Not implemented")))
-  (clj->avro [_ fixed path]
-    (throw (UnsupportedOperationException. "Not implemented"))))
+#_(defrecord FixedType []
+    SchemaCoercion
+    (match-clj? [_ x]
+      false)
+    (match-avro? [_ x]
+      false)
+    (avro->clj [_ fixed]
+      (throw (UnsupportedOperationException. "Not implemented")))
+    (clj->avro [_ fixed path]
+      (throw (UnsupportedOperationException. "Not implemented"))))
 
 (defrecord MapType [^Schema schema value-coercion]
   SchemaCoercion
@@ -601,7 +600,7 @@
 
   +UUID-type-registry+
 
-  { ;; Our "on by default" logicaltypes
+  {;; Our "on by default" logicaltypes
    {:type         "string"
     :logical-type "jackdaw.serdes.avro.UUID"}
    (fn [_ _] (StringUUIDType.))

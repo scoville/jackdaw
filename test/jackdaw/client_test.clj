@@ -104,7 +104,6 @@
         (.onCompletion cb nil ex)
         (is (= ex @result))))))
 
-
 (deftest ^:integration send!-test
   (fix/with-fixtures [(fix/topic-fixture (broker-config) test-topics 1000)]
     (with-producer (client/producer (producer-config))
@@ -169,7 +168,6 @@
       (with-consumer (client/consumer config)
         (fn [consumer]
           (is (instance? Consumer consumer)))))
-
 
     (testing "create with config and serdes"
       (with-consumer (client/consumer config {:key-serde key-serde
@@ -236,7 +234,7 @@
     (^ConsumerRecords poll [this ^long ms]
       (.poll queue ms TimeUnit/MILLISECONDS))
     (^ConsumerRecords poll [this ^Duration duration]
-     (.poll queue (.toMillis duration) TimeUnit/MILLISECONDS))))
+      (.poll queue (.toMillis duration) TimeUnit/MILLISECONDS))))
 
 (defn poll-result [topic data]
   (let [partition 1
@@ -252,13 +250,13 @@
     (.put q (poll-result "test-topic" [[1 1] [2 2]]))
     (let [results (client/poll consumer 1000)]
       (are [k v] (first results)
-           :topic "test-topic"
-           :key 1
-           :value 1)
+        :topic "test-topic"
+        :key 1
+        :value 1)
       (are [k v] (second results)
-           :topic "test-topic"
-           :key 2
-           :value 2))))
+        :topic "test-topic"
+        :key 2
+        :value 2))))
 
 (deftest ^:integration position-all-test
   (fix/with-fixtures [(fix/topic-fixture (broker-config) test-topics 1000)]

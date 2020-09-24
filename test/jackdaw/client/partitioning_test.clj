@@ -20,7 +20,6 @@
     (testing "dotted"
       (is (= 42 ((test-key-fn "foo.bar") {:foo {:bar 42}}))))))
 
-
 (deftest test->ProducerRecord
   (with-open [p (client/producer {"bootstrap.servers" "localhost:9092"
                                   "key.serializer" "org.apache.kafka.common.serialization.StringSerializer"
