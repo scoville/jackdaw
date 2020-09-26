@@ -14,7 +14,7 @@
               (println (apply str params)))
 
    :pprint (fn [machine params]
-              (pprint/pprint params))
+             (pprint/pprint params))
 
    :do (fn [machine [do-fn]]
          (do-fn @(:journal machine)))

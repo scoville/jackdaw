@@ -281,8 +281,8 @@
   (merge
     [_ other-kstream]
     (clj-kstream
-      (.merge kstream
-              ^KStream (kstream* other-kstream))))
+     (.merge kstream
+             ^KStream (kstream* other-kstream))))
 
   (outer-join-windowed
     [_ other-kstream value-joiner-fn windows]
@@ -417,7 +417,7 @@
   (suppress
     [_ suppress-config]
     (clj-ktable
-       (.suppress ^KTable ktable (suppress-config->suppressed suppress-config))))
+     (.suppress ^KTable ktable (suppress-config->suppressed suppress-config))))
 
   (to-kstream
     [_]

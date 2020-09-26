@@ -63,7 +63,6 @@
       :topic topic-name
       :known-topics (keys (:topic-config machine))})))
 
-
 (defn handle-write-cmd [machine params]
   (apply do-write machine params))
 
