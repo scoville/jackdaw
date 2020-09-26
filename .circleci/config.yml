@@ -101,7 +101,7 @@ jobs:
             - .
 
   check_formatting:
-    <<: *build_config
+    <<: *test_config
     steps:
       - run:
           lein cljfmt check
@@ -141,7 +141,9 @@ workflows:
   build_and_test:
     jobs:
       - checkout_code
-      - check_formatting
+      - check_formatting:
+          requires:
+            - checkout_code
       - deps:
           requires:
             - checkout_code
