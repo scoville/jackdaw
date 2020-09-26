@@ -29,8 +29,8 @@
                     (d/future
                       @(.all (.alterConfigs ^AdminClient this topics))))
    :create-topics* (fn [this topics]
-                    (d/future
-                      @(.all (.createTopics ^AdminClient this topics))))
+                     (d/future
+                       @(.all (.createTopics ^AdminClient this topics))))
    :delete-topics*  (fn [this topics]
                       (d/future
                         @(.all (.deleteTopics ^AdminClient this topics))))

@@ -202,7 +202,6 @@
   [rt args]
   (.run rt (into-array String args)))
 
-
 (defn- class-exists? [c]
   (resolve-class (.getContextClassLoader (Thread/currentThread)) c))
 
@@ -217,26 +216,26 @@
 
   ([app-config reset-args reset-fn]
    (fn [t]
-   (if-not (class-exists? 'kafka.tools.StreamsResetter)
-     (throw (RuntimeException. "You must add a dependency on a kafka distrib which ships the kafka.tools.StreamsResetter tool"))
-     (let [rt (.newInstance (clojure.lang.RT/classForName "kafka.tools.StreamsResetter"))
-           app-id (get app-config "application.id")
-           args (concat ["--application-id" (get app-config "application.id")
-                         "--bootstrap-servers" (get app-config "bootstrap.servers")]
-                        reset-args)
-           result (with-open [out-str (java.io.StringWriter.)
-                              err-str (java.io.StringWriter.)]
-                    (binding [*out* out-str
-                              *err* err-str]
-                      (let [status (reset-fn rt args)]
-                        (flush)
-                        {:status status
-                         :out (str out-str)
-                         :err (str err-str)})))]
-       (if (zero? (:status result))
-         (t)
-         (throw (ex-info "failed to reset application. check logs for details"
-                         result))))))))
+     (if-not (class-exists? 'kafka.tools.StreamsResetter)
+       (throw (RuntimeException. "You must add a dependency on a kafka distrib which ships the kafka.tools.StreamsResetter tool"))
+       (let [rt (.newInstance (clojure.lang.RT/classForName "kafka.tools.StreamsResetter"))
+             app-id (get app-config "application.id")
+             args (concat ["--application-id" (get app-config "application.id")
+                           "--bootstrap-servers" (get app-config "bootstrap.servers")]
+                          reset-args)
+             result (with-open [out-str (java.io.StringWriter.)
+                                err-str (java.io.StringWriter.)]
+                      (binding [*out* out-str
+                                *err* err-str]
+                        (let [status (reset-fn rt args)]
+                          (flush)
+                          {:status status
+                           :out (str out-str)
+                           :err (str err-str)})))]
+         (if (zero? (:status result))
+           (t)
+           (throw (ex-info "failed to reset application. check logs for details"
+                           result))))))))
 
 (defn integration-fixture
   [build-fn {:keys [broker-config
