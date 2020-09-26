@@ -99,6 +99,15 @@ jobs:
           key: v1-jackdaw-{{ .Branch }}-{{ .Revision }}
           paths:
             - .
+
+  check_formatting:
+    <<: *test_config
+    steps:
+      - *restore_repo
+      - *restore_mvn
+      - run:
+          lein cljfmt check
+
   deps:
     <<: *build_config
     steps:
@@ -115,8 +124,6 @@ jobs:
     steps:
       - *restore_repo
       - *restore_mvn
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           lein cljfmt check
       - run:
@@ -131,54 +138,21 @@ jobs:
           name: Report Test Coverage
           command: bash <(curl -s https://codecov.io/bash)
 
-  deploy:
-    <<: *deploy_config
-    steps:
-      - *restore_repo
-      - *restore_mvn
-      - run:
-          name: Prepare signing key
-          command: |
-            echo $GPG_PRIVATE_KEY |base64 --decode |gpg --yes --batch --import
-
-      - run:
-          name: Deploy to Clojars
-          command: |
-            export LEIN_GPG=/home/circleci/jackdaw/.circleci/bin/gpg
-            export REAL_GPG=$(which gpg)
-
-            lein do jar, pom, deploy clojars
-
-  deploy_snapshot:
-    <<: *deploy_config
-    steps:
-      - *restore_repo
-      - *restore_mvn
-      - run:
-          name: Deploy to Clojars
-          command: |
-            [ -z "$CLOJARS_USERNAME" ] || lein do jar, pom, deploy clojars
-
 workflows:
   version: 2
   build_and_test:
     jobs:
       - checkout_code
+      - check_formatting:
+          requires:
+            - checkout_code
       - deps:
           requires:
             - checkout_code
       - test:
           requires:
+            - check_formatting
             - deps
-      - deploy_snapshot:
-          context: clojars-deploy
-          requires:
-            - test
-          filters:
-            tags:
-              ignore: /.*/
-            branches:
-              ignore: /master/
 
   checkout_and_deploy:
     jobs:
@@ -186,14 +160,5 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              ignore: /.*/
-      - deploy:
-          context: clojars-deploy
-          requires:
-            - checkout_tags
-          filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
             branches:
               ignore: /.*/
