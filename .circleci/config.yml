@@ -141,11 +141,13 @@ workflows:
   build_and_test:
     jobs:
       - checkout_code
+      - check_formatting
       - deps:
           requires:
             - checkout_code
       - test:
           requires:
+            - check_formatting
             - deps
 
   checkout_and_deploy:
