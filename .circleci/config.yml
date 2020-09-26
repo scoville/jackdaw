@@ -125,6 +125,8 @@ jobs:
       - *restore_repo
       - *restore_mvn
       - run:
+          lein cljfmt check
+      - run:
           lein kaocha --plugin kaocha.plugin/junit-xml --junit-xml-file test-results/kaocha/results.xml --plugin cloverage --codecov
       - store_artifacts:
           path: ./logs
