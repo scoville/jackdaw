@@ -108,6 +108,16 @@ jobs:
       - run:
           lein cljfmt check
 
+  lint:
+    <<: *test_config
+    steps:
+      - *restore_repo
+      - *restore_mvn
+      - setup_remote_docker:
+          version: 19.03.12
+      - run:
+          docker run -v $PWD/src:/src --rm borkdude/clj-kondo clj-kondo --lint src
+
   deps:
     <<: *build_config
     steps:
@@ -146,12 +156,16 @@ workflows:
       - check_formatting:
           requires:
             - checkout_code
+      - lint:
+          requires:
+            - checkout_code
       - deps:
           requires:
             - checkout_code
       - test:
           requires:
             - check_formatting
+            - lint
             - deps
 
   checkout_and_deploy:

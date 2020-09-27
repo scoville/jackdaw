@@ -1,14 +1,11 @@
 (ns jackdaw.test.serde
   (:require
-   [clojure.tools.logging :as log]
    [jackdaw.serdes.edn :as edn-serde]
    [jackdaw.serdes.json :as json-serde])
   (:import
-   (org.apache.kafka.clients.consumer ConsumerRecord)
-   (org.apache.kafka.common.serialization Deserializer Serdes Serializer
+   (org.apache.kafka.common.serialization Serdes
                                           ByteArraySerializer
-                                          ByteArrayDeserializer)
-   (org.apache.kafka.common.errors SerializationException)))
+                                          ByteArrayDeserializer)))
 
 (set! *warn-on-reflection* false)
 
@@ -41,14 +38,14 @@
 (defn serialize-key
   "Serializes a key."
   [k {topic-name :topic-name
-      key-serde :key-serde :as t}]
+      key-serde :key-serde}]
   (when k
     (-> (.serializer key-serde)
         (.serialize topic-name k))))
 
 (defn serialize-value
   [v {topic-name :topic-name
-      value-serde :value-serde :as t}]
+      value-serde :value-serde}]
   (when v
     (-> (.serializer value-serde)
         (.serialize topic-name v))))
@@ -92,7 +89,7 @@
   "Returns a map of topics to the corresponding deserializer"
   [topic-config]
   (->> topic-config
-       (map (fn [[k v]]
+       (map (fn [[_ v]]
               [(:topic-name v)
                (deserializer v)]))
        (into {})))
@@ -101,7 +98,7 @@
   "Returns a map of topic to the corresponding serializer"
   [topic-config]
   (->> topic-config
-       (map (fn [[k v]]
+       (map (fn [[_ v]]
               [(:topic-name v)
                (serializer v)]))
        (into {})))

@@ -30,6 +30,7 @@
     :timestamp-type/log-append TimestampType/LOG_APPEND_TIME
     TimestampType/NO_TIMESTAMP_TYPE))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data TimestampType->data [^TimestampType tt]
   (cond
     (= tt TimestampType/NO_TIMESTAMP_TYPE) nil

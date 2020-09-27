@@ -14,7 +14,6 @@
   (:import
    org.apache.kafka.common.header.Header
    org.apache.kafka.clients.consumer.Consumer
-   org.apache.kafka.streams.KafkaStreams$StateListener
    org.apache.kafka.clients.consumer.ConsumerRecord
    org.apache.kafka.clients.producer.Producer
    org.apache.kafka.clients.producer.ProducerRecord))
@@ -117,7 +116,7 @@
     {:process (d/loop [consumer (subscription kafka-config
                                               (vals topic-metadata))]
                 (d/chain (d/future consumer)
-                         (fn [c]
+                         (fn [_]
                            (when-not (realized? started?)
                              (deliver started? true)
                              (log/infof "started kafka consumer: %s"
@@ -174,40 +173,43 @@
 (defn producer
   "Creates an asynchronous kafka producer to be used by a test-machine for for
    injecting test messages"
-  ([kafka-config topic-config serializers]
-   (let [producer       (kafka/producer kafka-config byte-array-serde)
-         messages       (s/stream 1 (map (fn [x]
-                                           (try
-                                             (-> (apply-serializers serializers x)
-                                                 (build-record))
-                                             (catch Exception e
-                                               (let [trace (with-out-str
-                                                             (stacktrace/print-cause-trace e))]
-                                                 (log/error e trace))
-                                               (assoc x :serialization-error e))))))
+  ([kafka-config _topic-config serializers]
+   (let [producer (kafka/producer kafka-config byte-array-serde)
+         messages (s/stream 1 (map (fn [x]
+                                     (try
+                                       (-> (apply-serializers serializers x)
+                                           (build-record))
+                                       (catch Exception e
+                                         (let [trace (with-out-str
+                                                       (stacktrace/print-cause-trace e))]
+                                           (log/error e trace))
+                                         (assoc x :serialization-error e))))))
 
          _ (log/infof "started kafka producer: %s"
                       (select-keys kafka-config ["bootstrap.servers" "group.id"]))
-         process (d/loop [message (s/take! messages)]
-                   (d/chain (d/future message)
-                            (fn [{:keys [producer-record ack serialization-error] :as m}]
-                              (cond
-                                serialization-error   (do (deliver ack {:error :serialization-error
-                                                                        :message (.getMessage ^Exception serialization-error)})
-                                                          (d/recur (s/take! messages)))
+         process
+         #_{:clj-kondo/ignore [:unresolved-symbol]}
+         (d/loop [message (s/take! messages)]
+           (d/chain (d/future message)
+                    (fn [{:keys [producer-record ack serialization-error]}]
+                      (cond
+                        serialization-error   (do (deliver ack {:error :serialization-error
+                                                                :message (.getMessage ^Exception serialization-error)})
+                                                  (d/recur (s/take! messages)))
 
-                                producer-record       (do (kafka/send! producer producer-record (deliver-ack ack))
-                                                          (d/recur (s/take! messages)))
+                        producer-record       (do (kafka/send! producer producer-record (deliver-ack ack))
+                                                  (d/recur (s/take! messages)))
 
-                                :else (do
-                                        (.close ^Producer producer)
-                                        (log/infof "stopped kafka producer: "
-                                                   (select-keys kafka-config ["bootstrap.servers" "group.id"])))))))]
+                        :else (do
+                                (.close ^Producer producer)
+                                (log/infof "stopped kafka producer: %s"
+                                           (select-keys kafka-config ["bootstrap.servers" "group.id"])))))))]
 
      {:producer  producer
       :messages  messages
       :process   process})))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (deftransport :kafka
   [{:keys [config topics]}]
   (let [serdes        (serde-map topics)

@@ -19,20 +19,20 @@
   ([{:keys [topic-name]} key value]
    (ProducerRecord. ^String topic-name key value))
   ([{:keys [topic-name]} partition key value]
-   (let [partition-or-nil (if partition (int partition))]
+   (let [partition-or-nil (when partition (int partition))]
      (ProducerRecord. ^String topic-name
                       ^Integer partition-or-nil
                       key value)))
   ([{:keys [topic-name]} partition timestamp key value]
-   (let [partition-or-nil (if partition (int partition))
-         timestamp-or-nil (if timestamp (long timestamp))]
+   (let [partition-or-nil (when partition (int partition))
+         timestamp-or-nil (when timestamp (long timestamp))]
      (ProducerRecord. ^String topic-name
                       ^Integer partition-or-nil
                       ^Long timestamp-or-nil
                       key value)))
   ([{:keys [topic-name]} partition timestamp key value headers]
-   (let [partition-or-nil (if partition (int partition))
-         timestamp-or-nil (if timestamp (long timestamp))]
+   (let [partition-or-nil (when partition (int partition))
+         timestamp-or-nil (when timestamp (long timestamp))]
      (ProducerRecord. ^String topic-name
                       ^Integer partition-or-nil
                       ^Long timestamp-or-nil
@@ -48,10 +48,10 @@
            value
            headers
            partition
-           timestamp]
-    :as m}]
+           timestamp]}]
   (->ProducerRecord {:topic-name topic-name} partition timestamp key value headers))
 
+#_:clj-kondo/ignore
 (defn->data ProducerRecord->data [^ProducerRecord pr]
   {:topic-name (.topic pr)
    :key (.key pr)
@@ -78,31 +78,31 @@
   required. The third arity allows a user to provide a checksum. This
   arity may be removed in the future pending further breaking changes
   to the Kafka APIs."
-  ([{:keys [:topic-name] :as t} partition offset timestamp key-size value-size]
+  ([t partition offset timestamp key-size value-size]
    (RecordMetadata. (->TopicPartition t partition)
                     offset 0 ;; Force absolute offset
                     timestamp
                     nil ;; No checksum, it's deprecated
-                    ^Integer (if key-size (int key-size))
-                    ^Integer (if value-size (int value-size))))
-  ([{:keys [:topic-name] :as t} partition base-offset relative-offset timestamp
+                    ^Integer (when key-size (int key-size))
+                    ^Integer (when value-size (int value-size))))
+  ([t partition base-offset relative-offset timestamp
     key-size value-size]
    (RecordMetadata. (->TopicPartition t partition)
                     base-offset
                     relative-offset ;; Full offset control
                     timestamp
                     nil ;; No checksum, it's depreciated
-                    ^Integer (if key-size (int key-size))
-                    ^Integer (if value-size (int value-size))))
-  ([{:keys [:topic-name] :as t} partition base-offset relative-offset timestamp checksum
+                    ^Integer (when key-size (int key-size))
+                    ^Integer (when value-size (int value-size))))
+  ([t partition base-offset relative-offset timestamp checksum
     key-size value-size]
    (RecordMetadata. (->TopicPartition t partition)
                     base-offset
                     relative-offset ;; Full offset control
                     timestamp
                     checksum ;; Have fun I guess
-                    ^Integer (if key-size (int key-size))
-                    ^Integer (if value-size (int value-size)))))
+                    ^Integer (when key-size (int key-size))
+                    ^Integer (when value-size (int value-size)))))
 
 (defn map->RecordMetadata
   "Given a `::record-metdata`, build an equivalent `RecordMetadata`.
@@ -116,6 +116,7 @@
   (->RecordMetadata m partition offset timestamp
                     serialized-key-size serialized-value-size))
 
+#_:clj-kondo/ignore
 (defn->data RecordMetadata->data [^RecordMetadata rm]
   {:topic-name (.topic rm)
    :partition (.partition rm)

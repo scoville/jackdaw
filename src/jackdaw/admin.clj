@@ -80,7 +80,7 @@
   "Verifies the existence of the topic.
 
   Does not verify any config. details or values."
-  [^AdminClient client {:keys [topic-name] :as topic}]
+  [^AdminClient client {:keys [topic-name]}]
   {:pre [(client? client)
          (string? topic-name)]}
   (contains? (set (list-topics client)) {:topic-name topic-name}))
@@ -158,7 +158,7 @@
   {:pre [(client? client)
          (sequential? topics)]}
   (->> @(describe-topics* client (map :topic-name topics))
-       (every? (fn [[topic-name {:keys [partition-info]}]]
+       (every? (fn [[_topic-name {:keys [partition-info]}]]
                  (every? (fn [part-info]
                            (and (boolean (:leader part-info))
                                 (seq (:isr part-info))))
@@ -167,7 +167,7 @@
 (defn- topics->configs
   ^java.util.Map [topics]
   (into {}
-        (map (fn [{:keys [topic-name topic-config] :as t}]
+        (map (fn [{:keys [topic-name topic-config]}]
                {:pre [(string? topic-name)
                       (map? topic-config)]}
                [(jd/->ConfigResource jd/+topic-config-resource-type+

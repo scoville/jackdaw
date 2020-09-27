@@ -8,6 +8,7 @@
 
 ;;; Node
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data Node->data
   ""
   [^Node node]
@@ -18,6 +19,7 @@
 
 ;;; PartitionInfo
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data PartitionInfo->data
   [^PartitionInfo pi]
   {:topic-name (.topic pi)
@@ -29,6 +31,7 @@
 
 ;;; TopicPartitionInfo
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data TopicPartitionInfo->data
   ""
   [^TopicPartitionInfo tpi]
@@ -48,11 +51,11 @@
   "Given a `::topic-parititon`, build an equivalent `TopicPartition`.
 
   Inverts `(datafy ^TopicPartition tp)`."
-  [{:keys [topic-name
-           partition]
+  [{:keys [partition]
     :as m}]
   (->TopicPartition m partition))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data TopicPartition->data [^TopicPartition tp]
   {:topic-name (.topic tp)
    :partition (.partition tp)})

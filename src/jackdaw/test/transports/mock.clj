@@ -4,7 +4,7 @@
    [clojure.tools.logging :as log]
    [jackdaw.test.journal :as j]
    [jackdaw.test.transports :as t :refer [deftransport]]
-   [jackdaw.test.serde :refer [byte-array-serializer byte-array-deserializer
+   [jackdaw.test.serde :refer [byte-array-deserializer
                                apply-serializers apply-deserializers serde-map]]
    [manifold.stream :as s]
    [manifold.deferred :as d])
@@ -108,8 +108,9 @@
         started?  (promise)
         poll      (poller messages topic-config)]
 
+    #_{:clj-kondo/ignore [:unresolved-symbol]}
     {:process (d/loop [cont? @continue?]
-                (d/chain cont? (fn [d]
+                (d/chain cont? (fn [_d]
                                  (when-not (realized? started?)
                                    (log/info "started mock consumer: %s" {:driver driver})
                                    (deliver started? true))
@@ -141,26 +142,29 @@
 
         _ (log/infof "started mock producer: %s" {:driver driver})
 
-        process (d/loop [message (s/take! messages)]
-                  (d/chain message
-                           (fn [{:keys [input-record ack serialization-error] :as message}]
-                             (cond
-                               serialization-error  (do (deliver ack {:error :serialization-error
-                                                                      :message (.getMessage serialization-error)})
-                                                        (d/recur (s/take! messages)))
+        process
 
-                               input-record         (do (on-input input-record)
-                                                        (deliver ack {:topic (.topic input-record)
-                                                                      :partition (.partition input-record)
-                                                                      :offset (.offset input-record)})
-                                                        (d/recur (s/take! messages)))
+        #_{:clj-kondo/ignore [:unresolved-symbol]}
+        (d/loop [message (s/take! messages)]
+          (d/chain message
+                   (fn [{:keys [input-record ack serialization-error]}]
+                     (cond
+                       serialization-error  (do (deliver ack {:error :serialization-error
+                                                              :message (.getMessage serialization-error)})
+                                                (d/recur (s/take! messages)))
 
-                               :else (do
-                                       (log/infof "stopped mock producer: %s" {:driver driver}))))))]
+                       input-record         (do (on-input input-record)
+                                                (deliver ack {:topic (.topic input-record)
+                                                              :partition (.partition input-record)
+                                                              :offset (.offset input-record)})
+                                                (d/recur (s/take! messages)))
+
+                       :else (log/infof "stopped mock producer: %s" {:driver driver})))))]
 
     {:messages messages
      :process process}))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (deftransport :mock
   [{:keys [driver topics]}]
   (let [serdes        (serde-map topics)
