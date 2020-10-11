@@ -84,7 +84,6 @@
             (is (= [1 2] (first keyvals)))
             (is (= [1 3] (second keyvals)))))))
 
-
     (let [topic-a (mock/topic "topic-a")
           topic-b (mock/topic "topic-b")
           topic-c (mock/topic "topic-c")]
@@ -187,21 +186,21 @@
   ;; there is no good way to rest this until fix version 2.1.0
   ;; https://issues.apache.org/jira/browse/KAFKA-7326
   #_(testing "print!"
-     (let [std-out System/out
-           mock-out (java.io.ByteArrayOutputStream.)]
+      (let [std-out System/out
+            mock-out (java.io.ByteArrayOutputStream.)]
 
-       (try
-         (System/setOut (java.io.PrintStream. mock-out))
-         (let [topic-a (mock/topic "topic-a")
-               driver (mock/build-driver (fn [builder]
-                                           (-> builder
-                                               (k/kstream topic-a)
-                                               (k/print!))))
-               publish (partial mock/publish driver topic-a)]
-           (publish 1 1)
-           (is (= "[KSTREAM-SOURCE-0000000000]: 1, 2\n" (.toString mock-out))))
-         (finally
-           (System/setOut std-out)))))
+        (try
+          (System/setOut (java.io.PrintStream. mock-out))
+          (let [topic-a (mock/topic "topic-a")
+                driver (mock/build-driver (fn [builder]
+                                            (-> builder
+                                                (k/kstream topic-a)
+                                                (k/print!))))
+                publish (partial mock/publish driver topic-a)]
+            (publish 1 1)
+            (is (= "[KSTREAM-SOURCE-0000000000]: 1, 2\n" (.toString mock-out))))
+          (finally
+            (System/setOut std-out)))))
 
   (testing "through"
     (testing "without partitions"
@@ -233,15 +232,13 @@
 
         (publish 1 1)
 
-
         (is (= [{:key 1
                  :value 1
                  :partition 10}] (map #(select-keys % [:key :value :partition])
-                                       (mock/get-records driver
-                                                         topic-b))))
+                                      (mock/get-records driver
+                                                        topic-b))))
 
         (is (= [[1 1]] (mock/get-keyvals driver topic-c))))))
-
 
   (testing "to"
     (let [topic-a (mock/topic "topic-a")
@@ -426,12 +423,12 @@
     (let [topic-a (mock/topic "topic-a")
           topic-b (mock/topic "topic-b")
           transformer-supplier-fn #(let [total (atom 0)]
-                                    (reify Transformer
-                                      (init [_ _])
-                                      (close [_])
-                                      (transform [_ k v]
-                                        (swap! total + v)
-                                        (key-value [(* k 2) @total]))))
+                                     (reify Transformer
+                                       (init [_ _])
+                                       (close [_])
+                                       (transform [_ k v]
+                                         (swap! total + v)
+                                         (key-value [(* k 2) @total]))))
           driver (mock/build-driver (fn [builder]
                                       (-> builder
                                           (k/kstream topic-a)
@@ -452,12 +449,12 @@
     (let [topic-a (mock/topic "topic-a")
           topic-b (mock/topic "topic-b")
           transformer-supplier-fn #(let [total (atom 0)]
-                                    (reify ValueTransformer
-                                      (init [_ _])
-                                      (close [_])
-                                      (transform [_ v]
-                                        (swap! total + v)
-                                        @total)))
+                                     (reify ValueTransformer
+                                       (init [_ _])
+                                       (close [_])
+                                       (transform [_ v]
+                                         (swap! total + v)
+                                         @total)))
           driver (mock/build-driver (fn [builder]
                                       (-> builder
                                           (k/kstream topic-a)

@@ -1,12 +1,11 @@
 (ns jackdaw.test.commands.write
   (:require
    [manifold.stream :as s]
-   [clojure.tools.logging :as log]
    [jackdaw.client.partitioning :as partitioning]))
 
 (set! *warn-on-reflection* true)
 
-(defn default-partition-fn [topic-map topic-name k v partition-count]
+(defn default-partition-fn [topic-map _ k _ partition-count]
   (int (partitioning/default-partition topic-map k nil partition-count)))
 
 (defn create-message [topic-map message opts]
@@ -62,7 +61,6 @@
      {:error :unknown-topic
       :topic topic-name
       :known-topics (keys (:topic-config machine))})))
-
 
 (defn handle-write-cmd [machine params]
   (apply do-write machine params))

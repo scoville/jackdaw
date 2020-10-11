@@ -1,6 +1,5 @@
 (ns jackdaw.test.transports.identity
   (:require
-   [clojure.tools.logging :as log]
    [manifold.stream :as s]
    [jackdaw.test.transports :as t :refer [deftransport]]))
 
@@ -17,6 +16,7 @@
   (let [messages (s/stream 1)]
     {:messages messages}))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (deftransport :identity
   [{:keys [topics]}]
   (let [ch (s/stream 1)

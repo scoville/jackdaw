@@ -29,7 +29,8 @@
 
   :aliases {"kaocha" ["run" "-m" "kaocha.runner"]}
   :aot [jackdaw.serdes.edn2 jackdaw.serdes.fressian jackdaw.serdes.fn-impl]
-  :plugins [[me.arrdem/lein-git-version "2.0.8"]]
+  :plugins [[lein-cljfmt "0.7.0"]
+            [me.arrdem/lein-git-version "2.0.8"]]
 
   :git-version
   {:status-to-version

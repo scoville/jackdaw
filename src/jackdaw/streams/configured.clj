@@ -2,8 +2,64 @@
   "Clojure wrapper to kafka streams."
   {:license "BSD 3-Clause License <https://github.com/FundingCircle/jackdaw/blob/master/LICENSE>"}
   (:refer-clojure :exclude [count map reduce group-by merge filter peek])
-  (:require [jackdaw.streams.protocols :refer :all]
-            [jackdaw.streams.configurable :refer [config IConfigurable]]))
+  (:require [jackdaw.streams.protocols :refer [IGlobalKTable
+                                               IKGroupedBase
+                                               IKGroupedStream
+                                               IKGroupedTable
+                                               IKStream
+                                               IKStreamBase
+                                               IKTable
+                                               ISessionWindowedKStream
+                                               IStreamsBuilder
+                                               ITimeWindowedKStream
+                                               aggregate
+                                               branch
+                                               count
+                                               filter
+                                               filter-not
+                                               flat-map
+                                               flat-map-values
+                                               for-each!
+                                               global-ktable
+                                               global-ktable*
+                                               group-by
+                                               group-by-key
+                                               join
+                                               join-global
+                                               join-windowed
+                                               kgroupedstream*
+                                               kgroupedtable*
+                                               kstream
+                                               kstream*
+                                               kstreams
+                                               ktable
+                                               ktable*
+                                               left-join
+                                               left-join-global
+                                               left-join-windowed
+                                               map
+                                               map-values
+                                               merge
+                                               outer-join
+                                               outer-join-windowed
+                                               peek
+                                               print!
+                                               process!
+                                               reduce
+                                               select-key
+                                               session-windowed-kstream*
+                                               source-topics
+                                               streams-builder*
+                                               suppress
+                                               through
+                                               time-windowed-kstream*
+                                               to!
+                                               to-kstream
+                                               transform
+                                               transform-values
+                                               windowed-by-session
+                                               windowed-by-time]]
+            [jackdaw.streams.configurable :refer [IConfigurable]]))
 
 (set! *warn-on-reflection* true)
 
@@ -47,8 +103,8 @@
   (global-ktable
     [_ topic-config]
     (configured-global-ktable
-      config
-      (global-ktable streams-builder topic-config)))
+     config
+     (global-ktable streams-builder topic-config)))
 
   (source-topics
     [_]
@@ -81,8 +137,8 @@
      (left-join kstream ktable value-joiner-fn)))
 
   (left-join
-   [_ ktable value-joiner-fn topic-config other-topic-config]
-   (configured-kstream
+    [_ ktable value-joiner-fn topic-config other-topic-config]
+    (configured-kstream
      config
      (left-join kstream ktable value-joiner-fn topic-config other-topic-config)))
 
@@ -216,9 +272,9 @@
   (merge
     [_ other-kstream]
     (configured-kstream
-      config
-      (merge kstream
-             other-kstream)))
+     config
+     (merge kstream
+            other-kstream)))
 
   (outer-join-windowed
     [_ other-kstream value-joiner-fn windows]
@@ -251,7 +307,7 @@
      (select-key kstream key-value-mapper-fn)))
 
   (transform
-      [this transformer-supplier-fn]
+    [this transformer-supplier-fn]
     (transform this transformer-supplier-fn []))
 
   (transform
@@ -261,7 +317,7 @@
      (transform kstream transformer-supplier-fn state-store-names)))
 
   (transform-values
-      [this value-transformer-supplier-fn]
+    [this value-transformer-supplier-fn]
     (transform-values this value-transformer-supplier-fn []))
 
   (transform-values
@@ -273,14 +329,14 @@
   (left-join-global
     [_ global-ktable kv-mapper joiner]
     (configured-kstream
-      config
-      (left-join-global kstream global-ktable kv-mapper joiner)))
+     config
+     (left-join-global kstream global-ktable kv-mapper joiner)))
 
   (join-global
     [_ global-ktable kv-mapper joiner]
     (configured-kstream
-      config
-      (join-global kstream global-ktable kv-mapper joiner)))
+     config
+     (join-global kstream global-ktable kv-mapper joiner)))
 
   (kstream* [_]
     (kstream* kstream))

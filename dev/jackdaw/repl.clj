@@ -14,6 +14,7 @@
 ;;; Create and list topics
 ;;;
 
+
 (def admin-client-config
   {"bootstrap.servers" "localhost:9092"})
 
@@ -40,6 +41,7 @@
 ;;;
 ;;; Produce and consume records
 ;;;
+
 
 (def producer-config
   {"bootstrap.servers" "localhost:9092"})
@@ -94,6 +96,7 @@
 ;;;
 ;;; Helpers for REPL-driven development
 ;;;
+
 
 (deftype FakeTopicMetadata []
   ILookup

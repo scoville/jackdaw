@@ -2,18 +2,84 @@
   "Clojure wrapper to kafka streams."
   {:license "BSD 3-Clause License <https://github.com/FundingCircle/jackdaw/blob/master/LICENSE>"}
   (:refer-clojure :exclude [count map reduce group-by merge filter peek])
-  (:require [jackdaw.streams.protocols :refer :all]
-            [jackdaw.streams.lambdas :refer :all])
+  (:require [jackdaw.streams.protocols :refer [IGlobalKTable
+                                               IKGroupedBase
+                                               IKGroupedStream
+                                               IKGroupedTable
+                                               IKStream
+                                               IKStreamBase
+                                               IKTable
+                                               ISessionWindowedKStream
+                                               IStreamsBuilder
+                                               ITimeWindowedKStream
+                                               aggregate
+                                               branch
+                                               count
+                                               filter
+                                               filter-not
+                                               flat-map
+                                               flat-map-values
+                                               for-each!
+                                               global-ktable
+                                               global-ktable*
+                                               group-by
+                                               group-by-key
+                                               join
+                                               join-global
+                                               join-windowed
+                                               kgroupedstream*
+                                               kgroupedtable*
+                                               kstream
+                                               kstream*
+                                               kstreams
+                                               ktable
+                                               ktable*
+                                               left-join
+                                               left-join-global
+                                               left-join-windowed
+                                               map
+                                               map-values
+                                               merge
+                                               outer-join
+                                               outer-join-windowed
+                                               peek
+                                               print!
+                                               process!
+                                               reduce
+                                               select-key
+                                               session-windowed-kstream*
+                                               streams-builder*
+                                               suppress
+                                               through
+                                               time-windowed-kstream*
+                                               to!
+                                               to-kstream
+                                               transform
+                                               transform-values
+                                               windowed-by-session
+                                               windowed-by-time]]
+            [jackdaw.streams.lambdas :refer [->FnStreamPartitioner
+                                             aggregator
+                                             foreach-action
+                                             initializer
+                                             key-value-flatmapper
+                                             key-value-mapper
+                                             merger
+                                             predicate
+                                             processor-supplier
+                                             reducer
+                                             select-key-value-mapper
+                                             transformer-supplier
+                                             value-joiner
+                                             value-mapper
+                                             value-transformer-supplier]])
+
   (:import [java.util
             Collection]
            [java.util.regex
             Pattern]
-           [org.apache.kafka.common.serialization
-            Serde]
            [java.time
             Duration]
-           [org.apache.kafka.streams
-            KafkaStreams]
            [org.apache.kafka.streams
             StreamsBuilder]
            [org.apache.kafka.streams.kstream
@@ -22,9 +88,7 @@
             KeyValueMapper Materialized Merger Predicate Printed Produced
             Reducer Serialized SessionWindowedKStream SessionWindows
             Suppressed Suppressed$BufferConfig TimeWindowedKStream ValueJoiner
-            ValueMapper ValueMapperWithKey ValueTransformerSupplier Windows]
-           [org.apache.kafka.streams.processor
-            StreamPartitioner]))
+            ValueMapper ValueTransformerSupplier Windows]))
 
 (set! *warn-on-reflection* true)
 
@@ -281,8 +345,8 @@
   (merge
     [_ other-kstream]
     (clj-kstream
-      (.merge kstream
-              ^KStream (kstream* other-kstream))))
+     (.merge kstream
+             ^KStream (kstream* other-kstream))))
 
   (outer-join-windowed
     [_ other-kstream value-joiner-fn windows]
@@ -417,7 +481,7 @@
   (suppress
     [_ suppress-config]
     (clj-ktable
-       (.suppress ^KTable ktable (suppress-config->suppressed suppress-config))))
+     (.suppress ^KTable ktable (suppress-config->suppressed suppress-config))))
 
   (to-kstream
     [_]

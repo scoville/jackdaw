@@ -17,13 +17,13 @@
 (s/def ::lambdas/merger-fn ifn?)
 
 (s/fdef lambdas/initializer
-        :args (s/cat :initializer-fn ::lambdas/initializer-fn)
-        :ret initializer?)
+  :args (s/cat :initializer-fn ::lambdas/initializer-fn)
+  :ret initializer?)
 
 (s/fdef lambdas/aggregator
-        :args (s/cat :aggregator-fn ::lambdas/aggregator-fn)
-        :ret aggregator?)
+  :args (s/cat :aggregator-fn ::lambdas/aggregator-fn)
+  :ret aggregator?)
 
 (s/fdef lambdas/merger
-        :args (s/cat :merger-fn ::lambdas/merger-fn)
-        :ret merger?)
+  :args (s/cat :merger-fn ::lambdas/merger-fn)
+  :ret merger?)
