@@ -1,9 +1,9 @@
-(defproject fundingcircle/jackdaw "_"
+(defproject bunker-inspector/jackdaw "_"
   :description "A Clojure library for the Apache Kafka distributed streaming platform."
 
-  :scm {:name "git" :url "https://github.com/fundingcircle/jackdaw"}
+  :scm {:name "git" :url "https://github.com/bunker-inspector/jackdaw"}
 
-  :url "https://github.com/FundingCircle/jackdaw/"
+  :url "https://github.com/bunker-inspector/jackdaw/"
 
   :repositories [["confluent" {:url "https://packages.confluent.io/maven/"}]]
 
@@ -29,8 +29,8 @@
 
   :aliases {"kaocha" ["run" "-m" "kaocha.runner"]}
   :aot [jackdaw.serdes.edn2 jackdaw.serdes.fressian jackdaw.serdes.fn-impl]
-  :plugins [[me.arrdem/lein-git-version "2.0.8"]
-            [lein-cljfmt "0.7.0"]]
+  :plugins [[lein-cljfmt "0.7.0"]
+            [me.arrdem/lein-git-version "2.0.8"]]
 
   :git-version
   {:status-to-version
@@ -50,7 +50,7 @@
 
              ;; Define a profile intended to be shared by this project and its children
              :shared
-             {:url "https://github.com/FundingCircle/jackdaw"
+             {:url "https://github.com/bunker-inspector/jackdaw"
               :license {:name "BSD 3-clause"
                         :url "http://opensource.org/licenses/BSD-3-Clause"}
               :repositories
@@ -60,8 +60,7 @@
               :deploy-repositories
               [["clojars" {:url "https://clojars.org/repo/"
                            :username :env/clojars_username
-                           :password :env/clojars_password
-                           :signing {:gpg-key "fundingcirclebot@fundingcircle.com"}}]]}
+                           :password :env/clojars_password}]]}
 
              ;; The dev profile - non-deployment configuration
              :dev

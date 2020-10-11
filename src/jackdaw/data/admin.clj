@@ -15,6 +15,7 @@
     (ConfigEntry. k v)
     (ConfigEntry. k (:value v))))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data ConfigEntry->data
   ""
   [^ConfigEntry e]
@@ -26,12 +27,14 @@
 
 ;;; Config
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn map->Config
   ""
   ^Config [m]
   (Config.
    (map (partial apply ->ConfigEntry) m)))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data Config->data
   ""
   [^Config c]
@@ -43,6 +46,7 @@
 
 ;;; TopicDescription
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data TopicDescription->data
   ""
   [^TopicDescription td]
@@ -70,6 +74,7 @@
 
 ;;;; Result types
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data DescribeClusterResult->data
   ""
   [^DescribeClusterResult dcr]

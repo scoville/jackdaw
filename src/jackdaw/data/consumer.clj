@@ -48,6 +48,7 @@
                     serialized-key-size serialized-value-size
                     key value headers))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data ConsumerRecord->data [^ConsumerRecord r]
   {:topic-name (.topic r)
    :key (.key r)
@@ -76,12 +77,13 @@
   [{:keys [offset timestamp]}]
   (OffsetAndTimestamp. offset (long timestamp)))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data OffsetAndTimestamp->data [^OffsetAndTimestamp ots]
   {:offset (.offset ots)
    :timestamp (.timestamp ots)})
 
 (defn map->OffsetAndTimestamp
-  [{:keys [offset timestamp] :as m}]
+  [m]
   (->OffsetAndTimestamp m))
 
 (defn as-OffsetAndTimestamp

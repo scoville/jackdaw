@@ -25,6 +25,7 @@
     :config-resource/topic +topic-config-resource-type+
     +unknown-config-resource-type+))
 
+#_:clj-kondo/ignore
 (defn->data ConfigResourceType->data
   ""
   [^ConfigResource$Type crt]
@@ -54,6 +55,7 @@
   [name]
   (->ConfigResource +broker-config-resource-type+ name))
 
+#_:clj-kondo/ignore
 (defn->data ConfigResource->data
   ""
   [^ConfigResource cr]

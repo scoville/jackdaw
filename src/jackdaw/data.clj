@@ -78,6 +78,7 @@
       (.putAll props (stringify-keys m)))
     props))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defn->data Properties->data
   "Consume a `Properties` instance, keywordizing the keys and returning
   a Clojure mapping of the resulting keys to unmodified values."

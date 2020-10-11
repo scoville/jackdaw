@@ -7,13 +7,13 @@
 (def command-map
   {:stop (constantly true)
 
-   :sleep (fn [machine [sleep-ms]]
+   :sleep (fn [_ [sleep-ms]]
             (Thread/sleep sleep-ms))
 
-   :println (fn [machine params]
+   :println (fn [_ params]
               (println (apply str params)))
 
-   :pprint (fn [machine params]
+   :pprint (fn [_ params]
              (pprint/pprint params))
 
    :do (fn [machine [do-fn]]
