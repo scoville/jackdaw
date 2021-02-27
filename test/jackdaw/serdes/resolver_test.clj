@@ -53,7 +53,6 @@
             string-config {:serde-keyword :jackdaw.serdes/string-serde}
             resolved (resolver-fn string-config)]
         (is (instance? Serde resolved))
-        (is (instance? Serde resolved))
         ;; round trip test
         (is (= "foo"
                (->> "foo"
@@ -70,7 +69,6 @@
             example-data {:customer-id (str (uuid/v4))
                           :address {:value "foo"
                                     :key-path "foo.bar.baz"}}]
-        (is (instance? Serde resolved))
         (is (instance? Serde resolved))
         ;; round trip test
         (is (= example-data
@@ -92,12 +90,23 @@
                           :address {:value "foo"
                                     :key-path "foo.bar.baz"}}]
         (is (instance? Serde resolved))
-        (is (instance? Serde resolved))
         ;; round trip test
         (is (= example-data
                (->> example-data
                     (.serialize (.serializer resolved) "avro-topic")
                     (.deserialize (.deserializer resolved) "avro-topic"))))))
+
+    (testing "avro serde properties are validated"
+      (let [serde-properties {"value.subject.name.strategy" ""}
+            avro-config {:serde-keyword :jackdaw.serdes.avro.confluent/serde
+                         :schema-filename "resources/example_schema.avsc"
+                         :key? false}]
+        (is (thrown? Exception ((resolver/serde-resolver :schema-registry-url ""
+                                                         :schema-registry-client (reg/mock-client)
+                                                         :serializer-properties serde-properties) avro-config)))
+        (is (thrown? Exception ((resolver/serde-resolver :schema-registry-url ""
+                                                         :schema-registry-client (reg/mock-client)
+                                                         :deserializer-properties serde-properties) avro-config)))))
 
     (testing "bad config"
       (is (thrown-with-msg? ExceptionInfo

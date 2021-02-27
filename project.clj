@@ -1,4 +1,4 @@
-(defproject bunker-inspector/jackdaw "_"
+(defproject bunker-inspector/jackdaw :project/git-ref-short
   :description "A Clojure library for the Apache Kafka distributed streaming platform."
 
   :scm {:name "git" :url "https://github.com/bunker-inspector/jackdaw"}
