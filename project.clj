@@ -1,9 +1,9 @@
-(defproject bunker-inspector/jackdaw :project/git-ref-short
+(defproject scoville/jackdaw :project/git-ref-short
   :description "A Clojure library for the Apache Kafka distributed streaming platform."
 
-  :scm {:name "git" :url "https://github.com/bunker-inspector/jackdaw"}
+  :scm {:name "git" :url "https://github.com/scoville/jackdaw"}
 
-  :url "https://github.com/bunker-inspector/jackdaw/"
+  :url "https://github.com/scoville/jackdaw/"
 
   :repositories [["confluent" {:url "https://packages.confluent.io/maven/"}]]
 
@@ -50,7 +50,7 @@
 
              ;; Define a profile intended to be shared by this project and its children
              :shared
-             {:url "https://github.com/bunker-inspector/jackdaw"
+             {:url "https://github.com/scoville/jackdaw"
               :license {:name "BSD 3-clause"
                         :url "http://opensource.org/licenses/BSD-3-Clause"}
               :repositories
